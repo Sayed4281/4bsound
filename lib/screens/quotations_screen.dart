@@ -19,31 +19,21 @@ class QuotationsScreen extends StatelessWidget {
         title: const Text('Quotations'),
         backgroundColor: const Color(0xFF2196F3),
         elevation: 0,
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 16, top: 8, bottom: 8),
-            child: ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddQuotationScreen(),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.add, size: 20),
-              label: const Text('New Quote'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFF2196F3),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
+        // Remove the actions with the add button from here!
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF2196F3),
+        icon: const Icon(Icons.add, size: 20),
+        label: const Text('New Quote'),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddQuotationScreen(),
             ),
-          ),
-        ],
+          );
+        },
       ),
       body: Consumer<AppState>(
         builder: (context, appState, child) {

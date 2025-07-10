@@ -93,6 +93,35 @@ class AppState extends ChangeNotifier {
   Future<void> _saveData() async {
     // TODO: Save data to SharedPreferences
   }
+
+  EventNote createEventNote({
+    required String id,
+    required String title,
+    required String description,
+    required DateTime eventDate,
+    required String clientName,
+    required String clientContact,
+    required String venue,
+    required String equipmentNeeded,
+    required double estimatedCost,
+  }) {
+    final newEvent = EventNote(
+      id: id,
+      title: title,
+      description: description,
+      eventDate: eventDate,
+      createdAt: DateTime.now(),
+      clientName: clientName,
+      clientContact: clientContact,
+      venue: venue,
+      equipmentNeeded: equipmentNeeded,
+      estimatedCost: estimatedCost,
+    );
+    _eventNotes.add(newEvent);
+    notifyListeners();
+    _saveData();
+    return newEvent;
+  }
 }
 
 class EventNote {

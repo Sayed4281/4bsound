@@ -13,8 +13,10 @@ class PDFService {
     try {
       final logoBytes = await rootBundle.load('assets/images/4b SOUNDS.png');
       logoImage = pw.MemoryImage(logoBytes.buffer.asUint8List());
+      print('Logo loaded successfully');
     } catch (e) {
       // Logo loading failed, will use text-only header
+      print('Logo loading failed: $e');
       logoImage = null;
     }
 
@@ -29,7 +31,7 @@ class PDFService {
               pw.Container(
                 padding: const pw.EdgeInsets.all(20),
                 decoration: pw.BoxDecoration(
-                  color: PdfColor.fromHex('#2196F3'),
+                  color: PdfColor.fromHex('#1976D2'),
                   borderRadius: pw.BorderRadius.circular(10),
                 ),
                 child: pw.Row(
@@ -37,18 +39,50 @@ class PDFService {
                     // Logo section
                     if (logoImage != null) ...[
                       pw.Container(
-                        width: 60,
-                        height: 60,
+                        width: 80,
+                        height: 80,
                         decoration: pw.BoxDecoration(
                           color: PdfColors.white,
-                          borderRadius: pw.BorderRadius.circular(8),
+                          borderRadius: pw.BorderRadius.circular(12),
+                          border: pw.Border.all(
+                            color: PdfColor.fromHex('#E3F2FD'),
+                            width: 2,
+                          ),
                         ),
                         child: pw.Padding(
-                          padding: const pw.EdgeInsets.all(4),
-                          child: pw.Image(logoImage),
+                          padding: const pw.EdgeInsets.all(8),
+                          child: pw.Image(
+                            logoImage,
+                            fit: pw.BoxFit.contain,
+                          ),
                         ),
                       ),
-                      pw.SizedBox(width: 16),
+                      pw.SizedBox(width: 20),
+                    ] else ...[
+                      // Fallback when logo is not available
+                      pw.Container(
+                        width: 80,
+                        height: 80,
+                        decoration: pw.BoxDecoration(
+                          color: PdfColors.white,
+                          borderRadius: pw.BorderRadius.circular(12),
+                          border: pw.Border.all(
+                            color: PdfColor.fromHex('#E3F2FD'),
+                            width: 2,
+                          ),
+                        ),
+                        child: pw.Center(
+                          child: pw.Text(
+                            '4B',
+                            style: pw.TextStyle(
+                              fontSize: 24,
+                              fontWeight: pw.FontWeight.bold,
+                              color: PdfColor.fromHex('#1976D2'),
+                            ),
+                          ),
+                        ),
+                      ),
+                      pw.SizedBox(width: 20),
                     ],
                     pw.Expanded(
                       child: pw.Column(
@@ -96,13 +130,12 @@ class PDFService {
 
               // Quotation title
               pw.Center(
-                child: pw.Text(
-                  'QUOTATION',
-                  style: pw.TextStyle(
-                    fontSize: 20,
-                    fontWeight: pw.FontWeight.bold,
-                    color: PdfColor.fromHex('#2196F3'),
-                  ),
+                child: pw.Text(                    'QUOTATION',
+                    style: pw.TextStyle(
+                      fontSize: 20,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColor.fromHex('#1976D2'),
+                    ),
                 ),
               ),
 
@@ -185,8 +218,8 @@ class PDFService {
                     children: [
                       _tableCell(item.description),
                       _tableCell(item.quantity.toString()),
-                      _tableCell('₹${item.unitPrice.toStringAsFixed(0)}'),
-                      _tableCell('₹${item.total.toStringAsFixed(0)}'),
+                      _tableCell('Rs. ${item.unitPrice.toStringAsFixed(0)}'),
+                      _tableCell('Rs. ${item.total.toStringAsFixed(0)}'),
                     ],
                   )).toList(),
                 ],
@@ -210,7 +243,7 @@ class PDFService {
                           pw.SizedBox(
                             width: 80,
                             child: pw.Text(
-                              '₹${quotation.subtotal.toStringAsFixed(0)}',
+                              'Rs. ${quotation.subtotal.toStringAsFixed(0)}',
                               textAlign: pw.TextAlign.right,
                             ),
                           ),
@@ -226,7 +259,7 @@ class PDFService {
                           pw.SizedBox(
                             width: 80,
                             child: pw.Text(
-                              '₹${quotation.tax.toStringAsFixed(0)}',
+                              'Rs. ${quotation.tax.toStringAsFixed(0)}',
                               textAlign: pw.TextAlign.right,
                             ),
                           ),
@@ -253,11 +286,11 @@ class PDFService {
                           pw.SizedBox(
                             width: 80,
                             child: pw.Text(
-                              '₹${quotation.total.toStringAsFixed(0)}',
+                              'Rs. ${quotation.total.toStringAsFixed(0)}',
                               style: pw.TextStyle(
                                 fontWeight: pw.FontWeight.bold,
                                 fontSize: 16,
-                                color: PdfColor.fromHex('#2196F3'),
+                                color: PdfColor.fromHex('#1976D2'),
                               ),
                               textAlign: pw.TextAlign.right,
                             ),
@@ -298,7 +331,7 @@ class PDFService {
                     'Thank you for choosing 4B SOUND!',
                     style: pw.TextStyle(
                       fontWeight: pw.FontWeight.bold,
-                      color: PdfColor.fromHex('#2196F3'),
+                      color: PdfColor.fromHex('#1976D2'),
                     ),
                   ),
                 ),

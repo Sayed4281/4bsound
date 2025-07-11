@@ -14,6 +14,9 @@ class EquipmentScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Equipment Inventory'),
+        backgroundColor: Colors.green[700], // Green header
+        foregroundColor: Colors.white,
+        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -28,6 +31,7 @@ class EquipmentScreen extends StatelessWidget {
           ),
         ],
       ),
+      backgroundColor: Colors.white, // White body
       body: Consumer<AppState>(
         builder: (context, appState, child) {
           if (appState.equipment.isEmpty) {

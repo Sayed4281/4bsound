@@ -68,6 +68,9 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? 'Edit Equipment' : 'Add Equipment'),
+        backgroundColor: Colors.green[700], // Green header to match equipment screen
+        foregroundColor: Colors.white,
+        elevation: 0,
         actions: [
           TextButton(
             onPressed: _saveEquipment,
@@ -78,173 +81,128 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
           ),
         ],
       ),
+      backgroundColor: Colors.white, // White body
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // Image Selection
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Equipment Image',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    GestureDetector(
-                      onTap: _selectImage,
-                      child: Container(
-                        width: double.infinity,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey[300]!,
-                            style: BorderStyle.solid,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.grey[50],
-                        ),
-                        child: _selectedImageBytes != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.memory(
-                                  _selectedImageBytes!,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : _imagePath.isNotEmpty
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.asset(
-                                      _imagePath,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return const _ImagePlaceholder();
-                                      },
-                                    ),
-                                  )
-                                : const _ImagePlaceholder(),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        ElevatedButton.icon(
-                          onPressed: () => _selectImage(ImageSource.camera),
-                          icon: const Icon(Icons.camera_alt),
-                          label: const Text('Camera'),
-                        ),
-                        const SizedBox(width: 16),
-                        ElevatedButton.icon(
-                          onPressed: () => _selectImage(ImageSource.gallery),
-                          icon: const Icon(Icons.photo_library),
-                          label: const Text('Gallery'),
-                        ),
-                      ],
-                    ),
-                  ],
+            // Image selection
+            GestureDetector(
+              onTap: () => _selectImage(),
+              child: Container(
+                height: 200,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300]!,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.grey[400]!,
+                    width: 2,
+                  ),
                 ),
+                child: _selectedImageBytes != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.memory(
+                          _selectedImageBytes!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                      )
+                    : const _ImagePlaceholder(),
               ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Equipment Name
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Equipment Name *',
+                hintText: 'Enter equipment name',
+                prefixIcon: Icon(Icons.speaker),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter equipment name';
+                }
+                return null;
+              },
             ),
 
             const SizedBox(height: 16),
 
-            // Equipment Details
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Equipment Details',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Equipment Name *',
-                        hintText: 'e.g., JBL Speaker Set',
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter equipment name';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    DropdownButtonFormField<String>(
-                      value: _selectedCategory,
-                      decoration: const InputDecoration(
-                        labelText: 'Category *',
-                      ),
-                      items: _categories.map((category) {
-                        return DropdownMenuItem(
-                          value: category,
-                          child: Text(category),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedCategory = value!;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _descriptionController,
-                      decoration: const InputDecoration(
-                        labelText: 'Description',
-                        hintText: 'Equipment specifications and details',
-                      ),
-                      maxLines: 3,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _priceController,
-                      decoration: const InputDecoration(
-                        labelText: 'Rental Price (₹/day)',
-                        hintText: '0',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value != null && value.isNotEmpty) {
-                          if (double.tryParse(value) == null) {
-                            return 'Please enter valid price';
-                          }
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    SwitchListTile(
-                      title: const Text('Available for Rent'),
-                      subtitle: Text(_isAvailable ? 'Currently available' : 'Currently in use'),
-                      value: _isAvailable,
-                      onChanged: (value) {
-                        setState(() {
-                          _isAvailable = value;
-                        });
-                      },
-                      activeColor: const Color(0xFFFF6B35),
-                    ),
-                  ],
-                ),
+            // Description
+            TextFormField(
+              controller: _descriptionController,
+              decoration: const InputDecoration(
+                labelText: 'Description',
+                hintText: 'Enter equipment description',
+                prefixIcon: Icon(Icons.description),
               ),
+              maxLines: 3,
             ),
+
+            const SizedBox(height: 16),
+
+            // Category dropdown
+            DropdownButtonFormField<String>(
+              value: _selectedCategory,
+              decoration: const InputDecoration(
+                labelText: 'Category',
+                prefixIcon: Icon(Icons.category),
+              ),
+              items: _categories.map((category) {
+                return DropdownMenuItem(
+                  value: category,
+                  child: Text(category),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedCategory = value!;
+                });
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            // Rental Price
+            TextFormField(
+              controller: _priceController,
+              decoration: const InputDecoration(
+                labelText: 'Rental Price (₹/day)',
+                hintText: 'Enter rental price per day',
+                prefixIcon: Icon(Icons.currency_rupee),
+              ),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter rental price';
+                }
+                if (double.tryParse(value) == null) {
+                  return 'Please enter a valid number';
+                }
+                return null;
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            // Availability switch
+            SwitchListTile(
+              title: const Text('Available for Rent'),
+              subtitle: Text(_isAvailable ? 'Currently available' : 'Not available'),
+              value: _isAvailable,
+              onChanged: (value) {
+                setState(() {
+                  _isAvailable = value;
+                });
+              },
+            ),
+
+            const SizedBox(height: 32),
           ],
         ),
       ),
@@ -272,7 +230,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
           child: Wrap(
             children: [
               ListTile(
-                leading: const Icon(Icons.camera_alt),
+                leading: const Icon(Icons.photo_camera),
                 title: const Text('Camera'),
                 onTap: () {
                   Navigator.pop(context);
@@ -338,16 +296,16 @@ class _ImagePlaceholder extends StatelessWidget {
         Text(
           'Tap to add image',
           style: TextStyle(
-            color: Colors.grey[600],
             fontSize: 16,
+            color: Colors.grey[600],
           ),
         ),
         const SizedBox(height: 4),
         Text(
           'Camera or Gallery',
           style: TextStyle(
-            color: Colors.grey[500],
             fontSize: 12,
+            color: Colors.grey[500],
           ),
         ),
       ],

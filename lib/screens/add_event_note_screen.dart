@@ -59,6 +59,9 @@ class _AddEventNoteScreenState extends State<AddEventNoteScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? 'Edit Event Note' : 'Add Event Note'),
+        backgroundColor: Colors.blue[700], // Blue header to match event notes screen
+        foregroundColor: Colors.white,
+        elevation: 0,
         actions: [
           TextButton(
             onPressed: _saveNote,
@@ -69,6 +72,7 @@ class _AddEventNoteScreenState extends State<AddEventNoteScreen> {
           ),
         ],
       ),
+      backgroundColor: Colors.white, // White body
       body: Form(
         key: _formKey,
         child: ListView(
